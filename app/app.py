@@ -23,3 +23,18 @@ def index():
     cursor.execute('SELECT * FROM oscar_age_male')
     result = cursor.fetchall()
     return render_template('index.html', title='Home', user=user, actors=result)
+
+@app.route('/view/<int:actor_id>', methods=['GET'])
+def record_view(actor_id):
+    cursor = mysql.get_db().cursor()
+    cursor.execute('SELECT * FROM oscar_age_male WHERE id=%s', actor_id)
+    result = cursor.fetchall()
+    return render_template('view.html', title='View Form', actor=result[0])
+
+
+@app.route('/edit/<int:actor_id>', methods=['GET'])
+def form_edit_get(actor_id):
+    cursor = mysql.get_db().cursor()
+    cursor.execute('SELECT * FROM oscar_age_male WHERE id=%s', actor_id)
+    result = cursor.fetchall()
+    return render_template('edit.html', title='Edit Form', actor=result[0])
