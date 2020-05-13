@@ -86,3 +86,25 @@ def api_browse() -> str:
     json_result = json.dumps(result);
     resp = Response(json_result, status=200, mimetype='application/json')
     return resp
+
+
+@app.route('/api/v1/actors/<int:actor_id>', methods=['GET'])
+def api_retrieve(actor_id) -> str:
+    cursor = mysql.get_db().cursor()
+    cursor.execute('SELECT * FROM oscar_age_male WHERE id=%s', actor_id)
+    result = cursor.fetchall()
+    json_result = json.dumps(result);
+    resp = Response(json_result, status=200, mimetype='application/json')
+    return resp
+
+
+@app.route('/api/v1/actors/', methods=['POST'])
+def api_add() -> str:
+    cursor = mysql.get_db().cursor()
+    inputData = (request.args.get('Year', type=str), request.args.get('Age', type=int),
+                 request.args.get('Name', type=str), request.args.get('Movie', type=str))
+    sql_insert_query = """INSERT INTO oscar_age_male (Year, Age, Name, Movie) VALUES (%s, %s, %s, %s) """
+    cursor.execute(sql_insert_query, inputData)
+    mysql.get_db().commit()
+    resp = Response(status=201, mimetype='application/json')
+    return resp
