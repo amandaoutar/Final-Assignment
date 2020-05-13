@@ -76,3 +76,13 @@ def form_delete_post(actor_id):
     cursor.execute(sql_delete_query, actor_id)
     mysql.get_db().commit()
     return redirect("/", code=302)
+
+
+@app.route('/api/v1/actors', methods=['GET'])
+def api_browse() -> str:
+    cursor = mysql.get_db().cursor()
+    cursor.execute('SELECT * FROM oscar_age_male')
+    result = cursor.fetchall()
+    json_result = json.dumps(result);
+    resp = Response(json_result, status=200, mimetype='application/json')
+    return resp
