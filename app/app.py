@@ -38,3 +38,19 @@ def form_edit_get(actor_id):
     cursor.execute('SELECT * FROM oscar_age_male WHERE id=%s', actor_id)
     result = cursor.fetchall()
     return render_template('edit.html', title='Edit Form', actor=result[0])
+
+@app.route('/edit/<int:actor_id>', methods=['POST'])
+def form_update_post(actor_id):
+    cursor = mysql.get_db().cursor()
+    inputData = (
+    request.form.get('Name'), request.form.get('Age'), request.form.get('Year'),
+    request.form.get('Movie'), actor_id)
+    sql_update_query = """UPDATE oscar_age_male t SET t.Name = %s, t.Age = %s, t.Year = %s, t.Movie = %s WHERE t.id = %s """
+    cursor.execute(sql_update_query, inputData)
+    mysql.get_db().commit()
+    return redirect("/", code=302)
+
+
+@app.route('/actors/new', methods=['GET'])
+def form_insert_get():
+    return render_template('new.html', title='New Actors Form')
